@@ -3,11 +3,140 @@
 var userInput = document.getElementById('city');
 var searchBtn = document.getElementById('submitBtn');
 
-searchBtn.addEventListener('click', function(){
+var baseurl = "https://api.openweathermap.org/data/2.5/forecast?&q={userInput}&appid=9fd29d7cb5af7825d043e54a29f20d1e"
 
-    console.log(userInput);
+var fiveDayArr = [];
+showHistory();
+
+searchBtn.addEventListener('click', function (event) {
+    event.preventDefault();
+    fetchData(userInput.value);
+    userInput.value = '';
+});
+
+async function fetchData(userInput) {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?&q=${userInput}&units=metric&appid=9fd29d7cb5af7825d043e54a29f20d1e`;
 
 
-}); 
+    try {
+        const response = await fetch(url);
+        console.log(response)
+        const data = await response.json();
+        console.log(data);
 
+        if (response.ok) {
+            var cityName = data.city.name;
+            var currentDate = data.list[0].dt_txt;
+            var humidity = data.list[0].main.humidity;
+            var temp = (data.list[0].main.temp);
+            var icon = data.list[0].weather[0].icon;
+            var wind = (data.list[0].wind.speed);
+
+            makeCurrentWeatherBox(cityName, temp, humidity, wind);
+            fiveDayArr = []
+            for (let i = 4; i < data.list.length; i += 8) {
+                fiveDayArr.push({
+                    temp: data.list[i].main.temp,
+                    humidity: data.list[i].main.humidity,
+                    wind: data.list[i].wind.speed
+                });
+            }
+            makeFiveDayCards()
+            saveSearch(userInput);
+            showHistory();
+        } else {
+            console.log(response.status, response.statusText);
+            console.log(userInput);
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+function saveSearch(city) {
+    var searches = localStorage.getItem('searches') || "[]";
+    searches = JSON.parse(searches);
+    if (!searches.includes(city)) {
+        searches.push(city);
+    }
+    localStorage.setItem('searches', JSON.stringify(searches));
+}
+
+function showHistory() {
+    var searchHistory = localStorage.getItem('searches');
+    const history = document.querySelector('#search-history');
+    history.innerHTML = '';
+    var ul = document.createElement('ul');
+    ul.setAttribute('id', 'city-list');
+
+    searchHistory = JSON.parse(searchHistory);
+
+    for (let key in searchHistory) {
+        console.log(searchHistory[key]);
+        var li = document.createElement('li');
+        li.textContent = searchHistory[key];
+        ul.appendChild(li);
+        history.appendChild(ul);
+        li.addEventListener('click', searchAgain);
+
+    }
+    var clearButton = document.createElement('button');
+    clearButton.setAttribute('id', 'clear');
+    clearButton.textContent = 'Clear History';
+    history.appendChild(clearButton);
+    clearButton.addEventListener('click', clearHistory)
+}
+
+function searchAgain(event) {
+    var clickedCity = event.target.textContent;
+    console.log(clickedCity);
+    fetchData(clickedCity);
+}
+
+function clearHistory() {
+    localStorage.clear();
+    showHistory();
+}
+
+function makeCurrentWeatherBox(cityName, temperature, humidity, windSpeed) {
+    const cityEl = document.querySelector('#searched');
+    const tempEl = document.querySelector('#temp');
+    const windEl = document.querySelector('#wind');
+    const humidityEl = document.querySelector('#humidity');
+
+    cityEl.innerHTML = cityName;
+    tempEl.innerHTML = temperature;
+    windEl.innerHTML = windSpeed;
+    humidityEl.innerHTML = humidity;
+}
+
+function makeFiveDayCards() {
+    console.log("Making 5 day cards")
+    console.log(fiveDayArr)
+ 
+
+    const mainSection = document.querySelector('main section');
+    const fiveDay = document.querySelector('#forecast');
+    fiveDay.innerHTML = '';
+
+    for (let i = 0; i < fiveDayArr.length; i++) {
+        const dayWeatherDiv = document.createElement('div');
+
+        const date = document.createElement('p');
+        date.innerText = new Date(Date.now() + (i + 1) * 24 * 60 * 60 * 1000).toLocaleDateString();
+
+        const temperature = document.createElement('p');
+        temperature.innerText = `Temperature: ${fiveDayArr[i].temp} °C`;
+
+        const humidity = document.createElement('p');
+        humidity.innerText = `Humidity: ${fiveDayArr[i].humidity} %`;
+
+        const windSpeed = document.createElement('p');
+        windSpeed.innerText = `Wind Speed: ${fiveDayArr[i].wind} km/h`;
+
+        dayWeatherDiv.append(date, temperature, humidity, windSpeed);
+        mainSection.appendChild(dayWeatherDiv);
+    }
+}
 

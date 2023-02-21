@@ -1,0 +1,72 @@
+
+#dashboard {
+    display: flex;
+    justify-content: center;
+    color: white;
+    background-color: darkblue;
+    margin-top: 0px;
+    padding: 10px 0px;
+}
+body {
+    margin: 0px;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    width: 25%; 
+    max-width: 300px;
+    margin: 8px;
+  }
+  
+  #city, #submitBtn, #clear {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  #submitBtn, #clear {
+    cursor: pointer;
+  }
+  #city {
+    padding: 4px;
+  }
+
+  #submitBtn {
+    margin-top: 10px;
+    padding: 5px;
+    background-color: #0074D9;
+    color: lightgrey;
+    border: none;
+    border-radius: 4px; 
+  }
+
+  #clear {
+    margin-top: 10px;
+    padding: 5px;
+    background-color: lightcoral;
+    /* background-color: rgb(228, 228, 228); */
+    color: black;
+    border: none;
+    border-radius: 4px; 
+
+
+  }
+
+  li {
+    box-sizing: border-box;
+    border-radius: 4px;
+    list-style: none;
+    width: 100%;
+    background-color: lightgrey;
+    padding: 2px;
+    margin: 8px 0px;
+    cursor: pointer;
+  }
+
+  ul {
+    padding: 0px;
+    text-align: center;
+  }
+  #edit-later {
+    display: none;
+  }
+  
