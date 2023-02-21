@@ -30,18 +30,22 @@ async function fetchData(userInput) {
             var humidity = data.list[0].main.humidity;
             var temp = (data.list[0].main.temp);
             var icon = data.list[0].weather[0].icon;
+    
             var wind = (data.list[0].wind.speed);
 
-            makeCurrentWeatherBox(cityName, temp, humidity, wind);
+
+            makeCurrentWeatherBox(cityName, temp, humidity, wind, icon);
             fiveDayArr = []
             for (let i = 4; i < data.list.length; i += 8) {
                 fiveDayArr.push({
                     temp: data.list[i].main.temp,
                     humidity: data.list[i].main.humidity,
-                    wind: data.list[i].wind.speed
+                    wind: data.list[i].wind.speed,
+                    icon: data.list[i].weather[0].icon
+        
                 });
             }
-            makeFiveDayCards()
+            makeFiveDayCards(data);
             saveSearch(userInput);
             showHistory();
         } else {
@@ -99,44 +103,64 @@ function clearHistory() {
     showHistory();
 }
 
-function makeCurrentWeatherBox(cityName, temperature, humidity, windSpeed) {
+function makeCurrentWeatherBox(cityName, temperature, humidity, windSpeed, icon) {
     const cityEl = document.querySelector('#searched');
     const tempEl = document.querySelector('#temp');
     const windEl = document.querySelector('#wind');
     const humidityEl = document.querySelector('#humidity');
+    const iconUrl = `http://openweathermap.org/img/wn/${icon}.png`
+    const iconEl = document.querySelector('#icon');
+    var mainCardEl = document.querySelector('#main-card');
+    if (mainCardEl.hasChildNodes()) {
+        mainCardEl.classList.add('has-border');
+    }
 
-    cityEl.innerHTML = cityName;
-    tempEl.innerHTML = temperature;
-    windEl.innerHTML = windSpeed;
-    humidityEl.innerHTML = humidity;
+
+
+    var today = new Date().toLocaleDateString();
+
+    cityEl.innerHTML = cityName + ' (' + today + ')';
+    iconEl.setAttribute('src', iconUrl);
+    tempEl.innerHTML = 'Temp: ' + temperature + '°C';
+    windEl.innerHTML = 'Wind: ' + windSpeed + ' MPH';
+    humidityEl.innerHTML = 'Humidity: ' + humidity + '%';
 }
 
-function makeFiveDayCards() {
+function makeFiveDayCards(data) {
+
     console.log("Making 5 day cards")
     console.log(fiveDayArr)
- 
+    const iconUrl = `http://openweathermap.org/img/wn/${icon}.png`
+    const iconEl = document.querySelector('#icon');
+    // document.querySelector('#edit-later').style.display = 'block';
 
-    const mainSection = document.querySelector('main section');
     const fiveDay = document.querySelector('#forecast');
     fiveDay.innerHTML = '';
+    
 
     for (let i = 0; i < fiveDayArr.length; i++) {
         const dayWeatherDiv = document.createElement('div');
+        dayWeatherDiv.setAttribute('id', 'card-boxes');
+
 
         const date = document.createElement('p');
         date.innerText = new Date(Date.now() + (i + 1) * 24 * 60 * 60 * 1000).toLocaleDateString();
 
+        const icon = document.createElement('img')
+        icon.setAttribute('src', `http://openweathermap.org/img/wn/${fiveDayArr[i].icon}.png`)
+        
         const temperature = document.createElement('p');
-        temperature.innerText = `Temperature: ${fiveDayArr[i].temp} °C`;
+        temperature.innerText = `Temp: ${fiveDayArr[i].temp} °C`;
+
+        const windSpeed = document.createElement('p');
+        windSpeed.innerText = `Wind: ${fiveDayArr[i].wind} km/h`;
 
         const humidity = document.createElement('p');
         humidity.innerText = `Humidity: ${fiveDayArr[i].humidity} %`;
 
-        const windSpeed = document.createElement('p');
-        windSpeed.innerText = `Wind Speed: ${fiveDayArr[i].wind} km/h`;
 
-        dayWeatherDiv.append(date, temperature, humidity, windSpeed);
-        mainSection.appendChild(dayWeatherDiv);
+        dayWeatherDiv.append(date,icon, temperature, humidity, windSpeed);
+        fiveDay.appendChild(dayWeatherDiv);
     }
 }
 

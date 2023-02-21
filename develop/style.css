@@ -43,7 +43,6 @@ aside {
     margin-top: 10px;
     padding: 5px;
     background-color: lightcoral;
-    /* background-color: rgb(228, 228, 228); */
     color: black;
     border: none;
     border-radius: 4px; 
@@ -66,7 +65,49 @@ aside {
     padding: 0px;
     text-align: center;
   }
-  #edit-later {
+  /* #edit-later {
     display: none;
   }
-  
+   */
+
+
+  .has-border {
+    align-items: center;
+    border: 1px solid black;
+ 
+  }
+
+  #current {
+    margin: 8px;
+    flex: 1;
+  }
+  #main-card {
+    margin-top: 19px;
+    padding-left: 10px;
+
+  }
+ 
+  main {
+    display: flex;
+    justify-content: center;
+  }
+
+
+
+  #forecast {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    flex: 1;
+  }
+  #card-boxes {
+    background-color: aliceblue;
+    margin: 5px;
+    padding-left: 5px;
+  }
+
+  #weather-container {
+    margin: 8px;
+    
+   
+  }
