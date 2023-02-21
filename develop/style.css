@@ -1,9 +1,11 @@
-
+* {
+    font-family: monospace;
+}
 #dashboard {
     display: flex;
     justify-content: center;
-    color: white;
-    background-color: darkblue;
+    color: black;
+    background-color: lightgoldenrodyellow;
     margin-top: 0px;
     padding: 10px 0px;
 }
@@ -65,11 +67,7 @@ aside {
     padding: 0px;
     text-align: center;
   }
-  /* #edit-later {
-    display: none;
-  }
-   */
-
+ 
 
   .has-border {
     align-items: center;
@@ -101,13 +99,16 @@ aside {
     flex: 1;
   }
   #card-boxes {
-    background-color: aliceblue;
+    background-color: lightgoldenrodyellow;
     margin: 5px;
     padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 15px;
   }
 
   #weather-container {
     margin: 8px;
+    display: none;
     
    
   }

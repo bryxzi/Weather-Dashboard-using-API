@@ -2,6 +2,7 @@
 
 var userInput = document.getElementById('city');
 var searchBtn = document.getElementById('submitBtn');
+var showContainer = document.getElementById('weather-container');
 
 var baseurl = "https://api.openweathermap.org/data/2.5/forecast?&q={userInput}&appid=9fd29d7cb5af7825d043e54a29f20d1e"
 
@@ -10,6 +11,7 @@ showHistory();
 
 searchBtn.addEventListener('click', function (event) {
     event.preventDefault();
+    
     fetchData(userInput.value);
     userInput.value = '';
 });
@@ -61,10 +63,20 @@ async function fetchData(userInput) {
 function saveSearch(city) {
     var searches = localStorage.getItem('searches') || "[]";
     searches = JSON.parse(searches);
-    if (!searches.includes(city)) {
-        searches.push(city);
-    }
+
+    var cityLowercase = city.toLowerCase();
+
+    var cityExists = searches.some(function (search) {
+        return search.toLowerCase() === cityLowercase;
+    });
+
+    if (!cityExists) {
+        var cityFormatted = cityLowercase.charAt(0).toUpperCase() + cityLowercase.slice(1);
+        searches.push(cityFormatted);
+
+
     localStorage.setItem('searches', JSON.stringify(searches));
+}
 }
 
 function showHistory() {
@@ -94,8 +106,10 @@ function showHistory() {
 
 function searchAgain(event) {
     var clickedCity = event.target.textContent;
+    console.log
     console.log(clickedCity);
     fetchData(clickedCity);
+    
 }
 
 function clearHistory() {
@@ -111,6 +125,7 @@ function makeCurrentWeatherBox(cityName, temperature, humidity, windSpeed, icon)
     const iconUrl = `http://openweathermap.org/img/wn/${icon}.png`
     const iconEl = document.querySelector('#icon');
     var mainCardEl = document.querySelector('#main-card');
+    showContainer.style.display = 'block';
     if (mainCardEl.hasChildNodes()) {
         mainCardEl.classList.add('has-border');
     }
